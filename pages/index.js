@@ -58,8 +58,8 @@ export default function PaginaInicial() {
       <Box
         styleSheet={{
           display: 'flex', alignItems: 'center', justifyContent: 'center',
-          backgroundColor: appConfig.theme.colors.primary[500],
-          backgroundImage: 'url(https://virtualbackgrounds.site/wp-content/uploads/2020/08/the-matrix-digital-rain.jpg)',
+          //backgroundColor: appConfig.theme.colors.primary[500],
+          backgroundImage: 'url(https://www.pixel4k.com/wp-content/uploads/2021/03/the-mandalorian-season-2-tv-series-4k_1615198680.jpg)',
           backgroundRepeat: 'no-repeat', backgroundSize: 'cover', backgroundBlendMode: 'multiply',
         }}
       >
@@ -72,9 +72,9 @@ export default function PaginaInicial() {
               xs: 'column',
               sm: 'row',
             },
-            width: '100%', maxWidth: '700px',
+            width: '100%', maxWidth: '500px',
             borderRadius: '5px', padding: '32px', margin: '16px',
-            boxShadow: '0 2px 10px 0 rgb(0 0 0 / 20%)',
+            boxShadow: '0 2px 10px 0 rgb(0 0 0 / 50%)',
             backgroundColor: appConfig.theme.colors.neutrals[700],
           }}
         >
@@ -108,9 +108,9 @@ export default function PaginaInicial() {
               fullWidth
               buttonColors={{
                 contrastColor: appConfig.theme.colors.neutrals["000"],
-                mainColor: appConfig.theme.colors.primary[500],
-                mainColorLight: appConfig.theme.colors.primary[400],
-                mainColorStrong: appConfig.theme.colors.primary[600],
+                mainColor: appConfig.theme.colors.neutrals[700],
+                mainColorLight: appConfig.theme.colors.neutrals[900],
+                mainColorStrong: appConfig.theme.colors.neutrals[600],
               }}
             />
           </Box>
