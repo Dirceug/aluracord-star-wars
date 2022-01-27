@@ -54,8 +54,8 @@ export default function PaginaInicial() {
             width: '100%', maxWidth: '600px',
             borderRadius: '5px', padding: '32px', margin: '16px',
             boxShadow: '0 2px 10px 0 rgb(0 0 0 / 50%)',
-            //backgroundColor: appConfig.theme.colors.neutrals["#000000"],
-            backgroundColor: '#151525',
+            backgroundColor: appConfig.theme.colors.neutrals[900],
+            //backgroundColor: '#151525',
           }}
         >
           {/* Formulário */}
@@ -78,8 +78,7 @@ export default function PaginaInicial() {
               {appConfig.name}
             </Text>
 
-            {/*<input 
-              type="text" 
+            <TextField
               value={username}
               onChange={function Handler (event) {
                 console.log("usuário digitou", event.target.value)
@@ -89,27 +88,16 @@ export default function PaginaInicial() {
                 //através do React
                 setUsername(valor)
               }}
-            />*/}
-
-            <TextField
-              value={username}
-                onChange={function Handler (event) {
-                  console.log("usuário digitou", event.target.value)
-                  //Onde está o valor?
-                  const valor = event.target.value;
-                  //Trocar o valor da variável
-                  //através do React
-                  setUsername(valor)
-                }}
               fullWidth
               textFieldColors={{
                 neutral: {
                   textColor: appConfig.theme.colors.neutrals[100],
-                  mainColor: appConfig.theme.colors.neutrals[900],
+                  mainColor: appConfig.theme.colors.neutrals[800],
                   mainColorHighlight: appConfig.theme.colors.primary[400],
                   backgroundColor: appConfig.theme.colors.neutrals[800],
                 },
               }}
+
             />
             <Button
               type='submit'
@@ -119,7 +107,7 @@ export default function PaginaInicial() {
                 contrastColor: appConfig.theme.colors.neutrals[100],
                 mainColor: appConfig.theme.colors.neutrals[700],
                 mainColorHightLight: appConfig.theme.colors.neutrals[100],
-                mainColorStrong: appConfig.theme.colors.neutrals[900],
+                mainColorStrong: appConfig.theme.colors.neutrals[800],
               }}
             />
           </Box>
@@ -154,7 +142,7 @@ export default function PaginaInicial() {
               styleSheet={{
                 color: appConfig.theme.colors.neutrals[200],
                 backgroundColor: appConfig.theme.colors.neutrals[900],
-                padding: '3px 10px',
+                padding: '5px 15px',
                 borderRadius: '100px'
               }}
             >
