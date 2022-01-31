@@ -1,14 +1,60 @@
 import { Box, Text, TextField, Image, Button } from '@skynexui/components';
 import React from 'react';
 import appConfig from '../config.json';
+import { createClient } from '@supabase/supabase-js';
+import { useRouter } from 'next/router';
+import { ButtonSendSticker } from '../src/components/ButtonSendSticker';
 
 const username = 'Dirceug'
 
+
+const SUPABASE_ANNON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYW5vbiIsImlhdCI6MTY0MzQ4NzExNSwiZXhwIjoxOTU5MDYzMTE1fQ.cYQSGbml-EsxhuBXTsLx67_I_esXRuHJfA3wvkcf7tE';
+const SUPABASE_URL = 'https://zfocumnxaemvuresfyyw.supabase.co';
+const supabaseClient = createClient(SUPABASE_URL, SUPABASE_ANNON_KEY);
+
+
+
+
+
+
 export default function ChatPage() {
 
-    
+    const roteamento = useRouter();
+    const usuarioLogado = roteamento.query.username;
     const [mensagem, setMensagem] = React.useState('');
-    const [listaDeMensagens, setListaDeMensagens] = React.useState([]);
+    const [listaDeMensagens, setListaDeMensagens] = React.useState([
+    ]);
+
+    function escutaMensagensEmTempoReal (adicionaMensagem) {
+        return supabaseClient
+        .from('mensagem')
+        .on(`INSERT`, ({ respotstaLive }) => {
+            adicionaMensagem(respotstaLive.new);
+        })
+        .subscribe();
+    }
+
+    React.useEffect(() => {
+        supabaseClient
+            .from(`mensagens`)
+            .select(`*`)
+            .order('id', {ascending: false})
+            .then(({ data }) => {
+            console.log('Dados da consulta:', data);
+            setListaDeMensagens(data);
+        });
+
+        escutaMensagensEmTempoReal((novaMensagem) => {
+            //handleNovaMensagem(novaMensagem)
+                            //console.log('Criando Mensagem: ', oQueTaVindoComoResposta)
+            setListaDeMensagens([
+                data[0],
+                ...listaDeMensagens,
+                ])
+        });
+    }, []),
+
+
     //    *******Usuário******
     // Usuário digita no campo textArea
     // Aperta enter para enviar
@@ -22,19 +68,29 @@ export default function ChatPage() {
 
     // ./Sua lógica vai aqui
 
-    function handleNovaMensagem(novaMensagem) {
+
+
+    function handleNovaMensagem (novaMensagem) {
         const mensagem = {
-            id: listaDeMensagens.length + 1,
-            de: 'Dirceug',
+            //id: listaDeMensagens.length + 1,
+            de: usuarioLogado ,
             texto: novaMensagem,
         }
         // Chamada de um backend
-        setListaDeMensagens([
-            mensagem,
-            ...listaDeMensagens,
-        ])
-        setMensagem('');
+
+        supabaseClient
+            .from('mensagens')
+            .insert([
+                mensagem
+            ])
+            .then(({ data }) => {
+            setMensagem('');
+            });
+
     }
+
+ 
+
     return (
         <Box
             styleSheet={{
@@ -53,8 +109,8 @@ export default function ChatPage() {
                     boxShadow: '0 12px 15px 0 rgb(0 0 0 / 50%)',
                     borderRadius: '5px',
                     backgroundColor: appConfig.theme.colors.neutrals[600],
-                    height: '90%',
-                    maxWidth: '85%',
+                    height: '50%',
+                    maxWidth: '50%',
                     maxHeight: '95vh',
                     padding: '20px',
                     //position: 'absolute',
@@ -89,7 +145,7 @@ export default function ChatPage() {
                             }}
                             onKeyPress={(event) => {
                                 if (event.key === "Enter") {
-                                    event.preventDefault()
+                                    event.preventDefault();
                                     handleNovaMensagem(mensagem);
                                 }                 
                             }}
@@ -126,6 +182,14 @@ export default function ChatPage() {
                             roteamento.push(`/chat`)
                           }}
                 />
+
+                          {/**Callback */}
+                    <ButtonSendSticker 
+                        onStickerClick={(sticker) => {
+                            console.log('Salva este sticker no banco', sticker);
+                            handleNovaMensagem (':sticker:' + sticker);
+                        }}
+                    />
                         
                     </Box>
                     
@@ -155,7 +219,7 @@ function Header() {
 
 function MessageList(props) {
     return (
-        <Text
+        <Box
             tag="ul"
             styleSheet={{
                 overflow: 'scroll',
@@ -193,7 +257,7 @@ function MessageList(props) {
                                 display: 'inline-block',
                                 marginRight: '8px',
                             }}
-                            src={`https://github.com/dirceug.png`}
+                            src={`https://github.com/${mensagem.de}.png`}
                         />
                         <Text tag="strong">
                             {mensagem.de}
@@ -210,10 +274,23 @@ function MessageList(props) {
                         </Text>)
             
                     </Box>
-                        {mensagem.texto}
+                   {/*  Condicional: {mensagem.texto.startsWith(':sticker:').toString()}*/}
+                    {mensagem.texto.startsWith(':sticker:') ? (
+                        <Image src={mensagem.texto.replace(':sticker:', '')}/>
+                    )
+                    : (
+                        mensagem.texto
+                    )}
+                    {/*
+                        if mensagem de texto possui stickers:
+                            mostra a mensagem
+                        else
+                            mensagem.texto
+                    */}
+                    {/*mensagem.texto*/}
                 </Text>
                 );
             })}
-        </Text>
+        </Box>
     )
 }
