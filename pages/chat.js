@@ -5,8 +5,9 @@ import { createClient } from '@supabase/supabase-js';
 import { useRouter } from 'next/router';
 import { ButtonSendSticker } from '../src/components/ButtonSendSticker';
 
-const username = 'Dirceug'
+//const username = 'Dirceug'
 
+// Como fazer AJAX: https://medium.com/@omariosouto/entendendo-como-fazer-ajax-com-a-fetchapi-977ff20da3c6
 
 const SUPABASE_ANNON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYW5vbiIsImlhdCI6MTY0MzQ4NzExNSwiZXhwIjoxOTU5MDYzMTE1fQ.cYQSGbml-EsxhuBXTsLx67_I_esXRuHJfA3wvkcf7tE';
 const SUPABASE_URL = 'https://zfocumnxaemvuresfyyw.supabase.co';
@@ -45,12 +46,12 @@ export default function ChatPage() {
         });
 
         escutaMensagensEmTempoReal((novaMensagem) => {
-            //handleNovaMensagem(novaMensagem)
-                            //console.log('Criando Mensagem: ', oQueTaVindoComoResposta)
-            setListaDeMensagens([
-                data[0],
-                ...listaDeMensagens,
-                ])
+            setListaDeMensagens((valorAtualDaLista) => {
+                return [
+                    novaMensagem,
+                    ...valorAtualDaLista,
+                    ]
+            })
         });
     }, []),
 
@@ -71,6 +72,25 @@ export default function ChatPage() {
 
 
     function handleNovaMensagem (novaMensagem) {
+        const mensagem = {
+            //id: listaDeMensagens.length + 1,
+            de: usuarioLogado ,
+            texto: novaMensagem,
+        }
+        // Chamada de um backend
+
+        supabaseClient
+            .from('mensagens')
+            .insert([
+                mensagem
+            ])
+            .then(({ data }) => {
+            setMensagem('');
+            });
+
+    }
+
+    function handle2 (novaMensagem) {
         const mensagem = {
             //id: listaDeMensagens.length + 1,
             de: usuarioLogado ,
@@ -146,7 +166,7 @@ export default function ChatPage() {
                             onKeyPress={(event) => {
                                 if (event.key === "Enter") {
                                     event.preventDefault();
-                                    handleNovaMensagem(mensagem);
+                                    handle2(mensagem);
                                 }                 
                             }}
                             placeholder="Sua mensagem insira aqui..."
@@ -187,7 +207,7 @@ export default function ChatPage() {
                     <ButtonSendSticker 
                         onStickerClick={(sticker) => {
                             console.log('Salva este sticker no banco', sticker);
-                            handleNovaMensagem (':sticker:' + sticker);
+                            handle2 (':sticker:' + sticker);
                         }}
                     />
                         
@@ -275,7 +295,8 @@ function MessageList(props) {
             
                     </Box>
                    {/*  Condicional: {mensagem.texto.startsWith(':sticker:').toString()}*/}
-                    {mensagem.texto.startsWith(':sticker:') ? (
+                    {mensagem.texto.startsWith(':sticker:') 
+                    ? (
                         <Image src={mensagem.texto.replace(':sticker:', '')}/>
                     )
                     : (
